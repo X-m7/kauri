@@ -6,15 +6,15 @@
   "contributors": [
     "Sean Bailey <sean@seanbailey.io>"
   ],
-  "version": "0.2.0-alpha",
+  "version": "0.3.0-alpha",
   "scripts": {
     "start": "electron-webpack dev",
     "build": "electron-webpack",
     "test": "jest",
     "dist": "yarn build && electron-builder",
     "pack": "yarn build --dir && electron-builder",
-    "clean": "yarn prettier --write \"src/**/*.js?(x)\" *.js",
-    "clean-check": "yarn prettier --check \"src/**/*.js?(x)\" *.js"
+    "clean": "yarn prettier --write \"src/**/*.@(@(j|t)s?(x)|scss)\" *.js ",
+    "clean-check": "yarn prettier --check \"src/**/*.@(@(j|t)s?(x)|scss)\" *.js "
   },
   "build": {
     "appId": "io.seanbailey.kauri",
@@ -41,8 +41,9 @@
     ]
   },
   "dependencies": {
+    "babel-jest": "^24.8.0",
     "electron-clipboard-extended": "^1.1.1",
-    "preact": "10.0.0-rc.0",
+    "preact": "^10.0.0-rc.3",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
@@ -54,15 +55,23 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "@types/jest": "^24.0.18",
+    "autoprefixer": "^9.6.1",
+    "babel": "^6.23.0",
     "babel-loader": "^8.0.5",
     "css-loader": "^3.1.0",
     "electron": "^5.0.6",
     "electron-builder": "^21.2.0",
+    "electron-devtools-installer": "^2.2.4",
     "electron-webpack": "^2.7.4",
     "jest": "^24.8.0",
     "node-sass": "^4.11.0",
+    "postcss-loader": "^3.0.0",
     "prettier": "^1.18.2",
     "sass-loader": "^7.1.0",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^6.1.0",
+    "typescript": "^3.6.3",
     "webpack": "^4.39.1",
     "webpack-build-notifier": "^1.0.3",
     "webpack-bundle-analyzer": "^3.4.1",

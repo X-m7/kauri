@@ -1,0 +1,277 @@
+[
+  {
+    "type": "heading",
+    "level": 1,
+    "class": "h1",
+    "children": [
+      {
+        "type": "text",
+        "content": "KDF Rendering Pipeline"
+      }
+    ]
+  },
+  {
+    "type": "heading",
+    "level": 2,
+    "class": "h2",
+    "children": ["Nodes"]
+  },
+  {
+    "type": "paragraph",
+    "class": "body",
+    "children": [
+      "These paragraphs are built with ",
+      {
+        "type": "code",
+        "class": "code",
+        "children": ["Text"]
+      },
+      " nodes. This sentence is followed by a ",
+      {
+        "type": "code",
+        "class": "code",
+        "children": ["LineBreak"]
+      },
+      ".",
+      {
+        "type": "lineBreak"
+      },
+      "And this paragraph is immediately followed by a ",
+      {
+        "type": "code",
+        "class": "code",
+        "children": ["PageBreak"]
+      },
+      ". See you on the next page!"
+    ]
+  },
+  {
+    "type": "pageBreak"
+  },
+  {
+    "type": "heading",
+    "level": 2,
+    "class": "h2",
+    "children": ["Elements"]
+  },
+  {
+    "type": "paragraph",
+    "class": "body",
+    "children": [
+      "This word is ",
+      {
+        "type": "span",
+        "styles": { "color": "red", "fontWeight": "500" },
+        "children": ["red"]
+      },
+      ", and ",
+      {
+        "type": "span",
+        "styles": { "textDecoration": "underline" },
+        "children": ["this line is underlined"]
+      },
+      " through the power of the ",
+      {
+        "type": "code",
+        "class": "code",
+        "children": ["Span"]
+      },
+      " element."
+    ]
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "variant": "lowerGreek",
+    "children": [
+      {
+        "type": "listItem",
+        "children": ["One fish"]
+      },
+      {
+        "type": "listItem",
+        "children": ["Two fish"]
+      },
+      {
+        "type": "listItem",
+        "children": ["Red fish"]
+      },
+      {
+        "type": "listItem",
+        "children": ["Blue fish"]
+      },
+      {
+        "type": "listItem",
+        "children": [
+          "This list is powered by the ",
+          {
+            "type": "code",
+            "class": "code",
+            "children": ["List"]
+          },
+          " element."
+        ]
+      }
+    ]
+  },
+  {
+    "type": "heading",
+    "level": 3,
+    "class": "h3",
+    "children": ["Tables"]
+  },
+  {
+    "type": "paragraph",
+    "class": "body",
+    "children": ["Tables are one of the most challenging elements to get right, because of their complexity."]
+  },
+  {
+    "type": "table",
+    "children": [
+      {
+        "type": "tableRow",
+        "children": [
+          {
+            "type": "tableCell",
+            "class": "cellHeading",
+            "children": ["Spec"]
+          },
+          {
+            "type": "tableCell",
+            "class": "cellHeading",
+            "children": ["File Format"]
+          },
+          {
+            "type": "tableCell",
+            "class": "cellHeading",
+            "children": ["Creator"]
+          }
+        ]
+      },
+      {
+        "type": "tableRow",
+        "children": [
+          {
+            "type": "tableCell",
+            "children": ["Office Open XML"]
+          },
+          {
+            "type": "tableCell",
+            "children": [".docx"]
+          },
+          {
+            "type": "tableCell",
+            "children": ["Microsoft"]
+          }
+        ]
+      },
+      {
+        "type": "tableRow",
+        "children": [
+          {
+            "type": "tableCell",
+            "children": ["OpenDocument"]
+          },
+          {
+            "type": "tableCell",
+            "children": [".odt"]
+          },
+          {
+            "type": "tableCell",
+            "children": ["OASIS"]
+          }
+        ]
+      },
+      {
+        "type": "tableRow",
+        "children": [
+          {
+            "type": "tableCell",
+            "children": ["Kauri Document Format"]
+          },
+          {
+            "type": "tableCell",
+            "children": [".kdf"]
+          },
+          {
+            "type": "tableCell",
+            "children": ["Sean Bailey, Prajna Sariputra, et al."]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "caption",
+    "class": "caption",
+    "children": [
+      "Common document formats and their creators. This is a ",
+      {
+        "type": "code",
+        "class": "code",
+        "children": ["Caption"]
+      },
+      " element."
+    ]
+  },
+  {
+    "type": "heading",
+    "level": 3,
+    "children": ["Hyperlinks"]
+  },
+  {
+    "type": "paragraph",
+    "children": [
+      "Hyperlinks are trivial with KDF—just use the ",
+      {
+        "type": "code",
+        "class": "code",
+        "children": ["Hyperlink"]
+      },
+      " element. ",
+      {
+        "type": "hyperlink",
+        "href": "https://github.com/sean0x42/kauri-specs",
+        "children": ["You can link anywhere you want"]
+      },
+      ". Here's a link to ",
+      {
+        "type": "hyperlink",
+        "href": "https://seanbailey.io",
+        "children": ["seanbailey.io"]
+      },
+      "."
+    ]
+  },
+  {
+    "type": "heading",
+    "level": 3,
+    "class": "h3",
+    "children": ["Code"]
+  },
+  {
+    "type": "paragraph",
+    "class": "body",
+    "children": ["You can add code blocks too. And some day they'll have syntax highlighting."]
+  },
+  {
+    "type": "codeBlock",
+    "class": "code",
+    "children": ["# Paginated list of players\ndef index\n  @players = Player.order(score: :desc).page(params[:page])\nend"]
+  },
+  {
+    "type": "hint",
+    "variant": "information",
+    "children": [
+      {
+        "type": "span",
+        "styles": {
+          "fontWeight": "bold",
+          "color": "#111"
+        },
+        "children": ["Hint:"]
+      },
+      " You can use hints to create heirarchy in your documents"
+    ]
+  }
+]

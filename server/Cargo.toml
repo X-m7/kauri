@@ -1,7 +1,10 @@
 [package]
 name = "kauri"
-version = "0.2.0"
-authors = ["Sean Bailey <sean@seanbailey.io>"]
+version = "0.3.0"
+authors = [
+  "Sean Bailey <sean@seanbailey.io>",
+  "Prajna Sariputra"
+]
 edition = "2018"
 
 [dependencies]

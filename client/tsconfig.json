@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "module": "es6",
+    "noImplicitAny": true,
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "target": "es5"
+  }
+}

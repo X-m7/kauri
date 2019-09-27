@@ -1,3 +1,4 @@
+use super::node::Element;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -24,6 +25,8 @@ pub struct Style {
     display: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     inherit: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub element: Option<Element>,
     pub styles: HashMap<String, String>,
 }
 
@@ -32,10 +35,12 @@ impl Style {
     ///
     /// - `display` A human-readable string which can be shown to users.
     /// - `inherit` A string containing the unique ID of another class, from which to inherit styles from.
+    /// - `element` An optional Element that will be used as a template
     pub fn new(display: String, inherit: Option<String>) -> Style {
         Style {
             display,
             inherit,
+            element: None,
             styles: HashMap::new(),
         }
     }

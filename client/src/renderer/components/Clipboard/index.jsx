@@ -5,6 +5,7 @@ import { Component, h } from "preact";
 import { connect } from "react-redux";
 import { addCommand } from "redux/actions";
 import clipboard from "electron-clipboard-extended";
+import { createCommand, addShortcut } from "../commands";
 
 /**
  * Stores and lists contents of system clipboard
@@ -14,7 +15,6 @@ import clipboard from "electron-clipboard-extended";
 class Clipboard extends Component {
   /**
    * Constructs a new Clipboard component
-   * @param {Object} props - Component properties
    */
   constructor(props) {
     super(props);
@@ -25,12 +25,10 @@ class Clipboard extends Component {
   }
 
   componentDidMount() {
-    this.props.addCommand(
-      "Clipboard:copy",
-      "copy",
-      "CmdOrCtrl+C",
-      this.doClipboardCopy
-    );
+    const cmd = createCommand("Clipboard:Copy", "Copy", this.doClipboardCopy);
+    addShortcut(cmd, "control+c");
+    this.props.addCommand(cmd);
+
     clipboard.startWatching();
     clipboard.on("text-changed", this.handleTextChanged);
     clipboard.on("image-changed", this.handleImageChanged);
@@ -43,14 +41,11 @@ class Clipboard extends Component {
   }
 
   doClipboardCopy() {
-    console.log("Testing clipboard copy");
+    console.log("Clipboard copy");
   }
 
   doClipboardPaste() {
-    /*
-      get clipboard
-      write to selection
-    */
+    console.log("Clipboard paste");
   }
 
   /**
@@ -69,7 +64,7 @@ class Clipboard extends Component {
   }
   /**
    * Reacts to changes in system clipboard
-   * @listens {text-changed} listens for text change event
+   * @listens {image-changed} listens for image change event
    */
   handleImageChanged() {
     this.setState(prevState => {
@@ -142,5 +137,5 @@ class ClipboardItem {
 
 export default connect(
   null,
-  { addCommand }
+  { addCommand },
 )(Clipboard);

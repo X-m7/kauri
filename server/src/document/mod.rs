@@ -8,7 +8,6 @@ use serde::{Deserialize, Serialize};
 use styles::Styles;
 
 #[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub struct Document {
     pub content: Vec<ChildNode>,
     pub styles: Styles,

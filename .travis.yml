@@ -1,18 +1,34 @@
-language: rust
-cache:
-  cargo: true
-  directories:
-    - $HOME/.yarn-cache
-dist: xenial
-before_install:
-  - curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - sudo apt-get update && sudo apt-get install yarn
-sudo: required
-before_script:
-  - rustup component add rustfmt
-  - rustup component add clippy
-script:
-  - ./server/build.sh
-  - ./client/build.sh
+matrix:
+  include:
+    - language: node_js
+      node_js:
+        - 10
+        - 12
+      cache: yarn
+      before_install:
+        - cd client
+
+    - language: rust
+      rust:
+        - stable
+        - beta
+        - nightly
+      cache: cargo
+      before_install:
+        - cd server
+      before_script:
+        - rustup component add rustfmt
+        - rustup component add clippy
+      script:
+        - cargo fmt --all -- --check
+        - cargo clippy
+        - cargo build --verbose
+        - cargo test --verbose
+
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+
+notifications:
+  email:
+    - sean@seanbailey.io

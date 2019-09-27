@@ -63,9 +63,7 @@ module.exports = {
   // globals: {},
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: [
-  //   "node_modules"
-  // ],
+  moduleDirectories: ["node_modules", "src/renderer"],
 
   // An array of file extensions your modules use
   // moduleFileExtensions: [
@@ -84,13 +82,13 @@ module.exports = {
   // modulePathIgnorePatterns: [],
 
   // Activates notifications for test results
-  // notify: false,
+  notify: false,
 
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: null,
+  preset: "ts-jest/presets/js-with-ts",
 
   // Run tests from one or more projects
   // projects: null,
@@ -131,7 +129,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-jsdom",
+  testEnvironment: "node",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -140,10 +138,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  // testMatch: [
-  //   "**/__tests__/**/*.[jt]s?(x)",
-  //   "**/?(*.)+(spec|test).[tj]s?(x)"
-  // ],
+  testMatch: ["**/test/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[tj]s?(x)"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [

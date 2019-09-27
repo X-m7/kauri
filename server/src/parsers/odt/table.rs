@@ -86,6 +86,8 @@ impl ODTParser {
                         .unwrap()
                         .get_common()
                         .children
+                        .as_mut()
+                        .unwrap()
                         .push(ChildNode::Element(child));
                 }
                 self.table_column_default_style_names.pop();
@@ -115,6 +117,8 @@ impl ODTParser {
                             .unwrap()
                             .get_common()
                             .children
+                            .as_mut()
+                            .unwrap()
                             .push(ChildNode::Element(child.clone()));
                     }
                     repeat -= 1;
@@ -142,6 +146,8 @@ impl ODTParser {
                             .unwrap()
                             .get_common()
                             .children
+                            .as_mut()
+                            .unwrap()
                             .push(ChildNode::Element(child.clone()));
                     }
                     repeat -= 1;
@@ -164,13 +170,17 @@ impl ODTParser {
             .last_mut()
             .unwrap()
             .get_common()
-            .children[1]
+            .children
+            .as_mut()
+            .unwrap()[1]
         {
             let (table, default_cell_style_name, mut repeat) =
                 table_column_begin(attributes, &self.auto_styles);
             element
                 .get_common()
                 .children
+                .as_mut()
+                .unwrap()
                 .push(ChildNode::Element(table));
             let table_column_default_style_names =
                 self.table_column_default_style_names.last_mut().unwrap();
@@ -190,9 +200,8 @@ impl ODTParser {
 }
 
 /// Takes the set of attributes of a style:table-properties tag in the ODT's content.xml,
-/// and creates a map of CSS properties based on the attributes
-pub fn table_properties_begin(attributes: Attributes) -> HashMap<String, String> {
-    let mut map: HashMap<String, String> = HashMap::new();
+/// and inserts the CSS properties and values into the referenced HashMap
+pub fn table_properties_begin(attributes: Attributes, map: &mut HashMap<String, String>) {
     let mut table_alignment = TableAlign::Margins;
     let mut margin_left = "0cm".to_string();
     let mut margin_right = "0cm".to_string();
@@ -210,7 +219,7 @@ pub fn table_properties_begin(attributes: Attributes) -> HashMap<String, String>
             match prefix {
                 "fo" => {
                     let (margin_left_option, margin_right_option) =
-                        table_properties_begin_fo(local_name, value, &mut map);
+                        table_properties_begin_fo(local_name, value, map);
                     if let Some(margin_left_option) = margin_left_option {
                         margin_left = margin_left_option;
                     }
@@ -218,10 +227,10 @@ pub fn table_properties_begin(attributes: Attributes) -> HashMap<String, String>
                         margin_right = margin_right_option;
                     }
                 }
-                "style" => table_properties_begin_style(local_name, value, &mut map),
+                "style" => table_properties_begin_style(local_name, value, map),
                 "table" => {
                     if let Some(table_alignment_option) =
-                        table_properties_begin_table(local_name, value, &mut map)
+                        table_properties_begin_table(local_name, value, map)
                     {
                         table_alignment = table_alignment_option;
                     }
@@ -251,7 +260,6 @@ pub fn table_properties_begin(attributes: Attributes) -> HashMap<String, String>
             );
         }
     }
-    map
 }
 
 /// Helper for table_properties_begin() for attributes with "fo" prefix,
@@ -373,9 +381,8 @@ fn table_properties_begin_table_border_model(value: String, styles: &mut HashMap
 }
 
 /// Takes the set of attributes of a style:table-column-properties tag in the ODT's content.xml,
-/// and creates a map of CSS properties based on the attributes
-pub fn table_column_properties_begin(attributes: Attributes) -> HashMap<String, String> {
-    let mut map: HashMap<String, String> = HashMap::new();
+/// and inserts the CSS properties and values into the referenced HashMap
+pub fn table_column_properties_begin(attributes: Attributes, map: &mut HashMap<String, String>) {
     for i in attributes {
         if let Ok(i) = i {
             let name = std::str::from_utf8(i.key).unwrap_or(":");
@@ -408,13 +415,11 @@ pub fn table_column_properties_begin(attributes: Attributes) -> HashMap<String, 
             }
         }
     }
-    map
 }
 
 /// Takes the set of attributes of a style:table-row-properties tag in the ODT's content.xml,
-/// and creates a map of CSS properties based on the attributes
-pub fn table_row_properties_begin(attributes: Attributes) -> HashMap<String, String> {
-    let mut map: HashMap<String, String> = HashMap::new();
+/// and inserts the CSS properties and values into the referenced HashMap
+pub fn table_row_properties_begin(attributes: Attributes, map: &mut HashMap<String, String>) {
     for i in attributes {
         if let Ok(i) = i {
             let name = std::str::from_utf8(i.key).unwrap_or(":");
@@ -453,13 +458,11 @@ pub fn table_row_properties_begin(attributes: Attributes) -> HashMap<String, Str
             }
         }
     }
-    map
 }
 
 /// Takes the set of attributes of a style:table-cell-properties tag in the ODT's content.xml,
-/// and creates a map of CSS properties based on the attributes
-pub fn table_cell_properties_begin(attributes: Attributes) -> HashMap<String, String> {
-    let mut map: HashMap<String, String> = HashMap::new();
+/// and inserts the CSS properties and values into the referenced HashMap
+pub fn table_cell_properties_begin(attributes: Attributes, map: &mut HashMap<String, String>) {
     for i in attributes {
         if let Ok(i) = i {
             let name = std::str::from_utf8(i.key).unwrap_or(":");
@@ -472,13 +475,12 @@ pub fn table_cell_properties_begin(attributes: Attributes) -> HashMap<String, St
             .unwrap_or("what")
             .to_string();
             match prefix {
-                "fo" => table_cell_properties_begin_fo(local_name, value, &mut map),
-                "style" => table_cell_properties_begin_style(local_name, value, &mut map),
+                "fo" => table_cell_properties_begin_fo(local_name, value, map),
+                "style" => table_cell_properties_begin_style(local_name, value, map),
                 _ => (),
             }
         }
     }
-    map
 }
 
 /// Helper for table_cell_properties_begin() for attributes with "fo" prefix
@@ -574,15 +576,21 @@ fn table_begin(
         .get(&style_name)
         .unwrap_or(&HashMap::new())
         .clone();
+    // This is only used by the children, so get rid of it in the copy here
+    element.styles.remove("_parent");
     // Caption is always the first child of a table in HTML if it exists, and colgroup always comes after if it is there too,
     // so we add it in in order to have a definitive position as to where the colgroup will come
     element
         .children
+        .as_mut()
+        .unwrap()
         .push(ChildNode::Element(Element::Caption(ElementCommon::new(
             None,
         ))));
     element
         .children
+        .as_mut()
+        .unwrap()
         .push(ChildNode::Element(Element::TableColumnGroup(
             ElementCommon::new(None),
         )));
@@ -635,11 +643,13 @@ pub fn table_column_begin(
             }
         }
     }
-    let mut element = TableColumn::new(None, Some(repeat));
-    element.common.styles = auto_styles
+    let mut style = auto_styles
         .get(&style_name)
         .unwrap_or(&HashMap::new())
         .clone();
+    let parent_style = style.remove("_parent");
+    let mut element = TableColumn::new(parent_style, Some(repeat));
+    element.common.styles = style;
     let element = Element::TableColumn(element);
     if let Some(default_cell_style_name) = default_cell_style_name {
         return (element, Some(default_cell_style_name), repeat);
@@ -683,11 +693,13 @@ fn table_row_begin(
             }
         }
     }
-    let mut element = ElementCommon::new(None);
-    element.styles = auto_styles
+    let mut style = auto_styles
         .get(&style_name)
         .unwrap_or(&HashMap::new())
         .clone();
+    let parent_style = style.remove("_parent");
+    let mut element = ElementCommon::new(parent_style);
+    element.styles = style;
     let element = Element::TableRow(element);
     if let Some(default_cell_style_name) = default_cell_style_name {
         return (element, Some(default_cell_style_name));
@@ -755,21 +767,20 @@ fn table_cell_begin(
             }
         }
     }
-    let mut element = TableCell::new(None, row_span, col_span);
+    let mut final_style_name = &style_name;
+    if final_style_name == "" {
+        final_style_name = &default_style_name;
+    }
+    let mut style = auto_styles
+        .get(final_style_name)
+        .unwrap_or(&HashMap::new())
+        .clone();
+    let parent_style = style.remove("_parent");
+    let mut element = TableCell::new(parent_style, row_span, col_span);
     element
         .common
         .attributes
         .insert("_repeat".to_string(), repeat);
-    if style_name != "" {
-        element.common.styles = auto_styles
-            .get(&style_name)
-            .unwrap_or(&HashMap::new())
-            .clone();
-    } else {
-        element.common.styles = auto_styles
-            .get(&default_style_name)
-            .unwrap_or(&HashMap::new())
-            .clone();
-    }
+    element.common.styles = style;
     Element::TableCell(element)
 }

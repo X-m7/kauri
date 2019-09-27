@@ -4,6 +4,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import SystemFonts from "system-font-families";
 import { format as formatUrl } from "url";
 import * as path from "path";
+import installExtension, { REDUX_DEVTOOLS } from "electron-devtools-installer";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const systemFonts = new SystemFonts();
@@ -12,6 +13,9 @@ const systemFonts = new SystemFonts();
 // destroyed by the garbage collector.
 let mainWindow;
 
+/**
+ * Creates a new window.
+ */
 function createWindow() {
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -22,7 +26,7 @@ function createWindow() {
   if (isDevelopment) {
     mainWindow.webContents.openDevTools();
     mainWindow.loadURL(
-      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
+      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`,
     );
   } else {
     mainWindow.loadURL(
@@ -30,7 +34,7 @@ function createWindow() {
         pathname: path.join(__dirname, "index.html"),
         protocol: "file",
         slashes: true,
-      })
+      }),
     );
   }
 
@@ -41,7 +45,21 @@ function createWindow() {
   });
 }
 
-app.on("ready", createWindow);
+/**
+ * Installs custom dev tools.
+ */
+function installDevTools() {
+  [REDUX_DEVTOOLS].forEach(extension => {
+    installExtension(extension)
+      .then(name => console.log(`Added Extension: ${name}`))
+      .catch(err => console.log("An error occurred: ", err));
+  });
+}
+
+app.on("ready", () => {
+  installDevTools();
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   // On Mac OS it is common for applications and their menu bar to stay active
@@ -63,6 +81,6 @@ ipcMain.on("getFontList", (event, args) => {
         .sort();
       event.sender.send("fontList", fontArray);
     },
-    err => console.log(err)
+    err => console.log(err),
   );
 });
